@@ -1,4 +1,4 @@
-(function(obj){
+(function($, obj){
 
     var nexus = {
         scope: {
@@ -164,10 +164,21 @@
         },
         bind: function(message){
             if (arguments.length === 2){
-                nexus.bind({
-                    handles: arguments[0],
-                    handle: arguments[1]
-                });
+                if ($.isArray(arguments[1])){
+                    var handles = arguments[0];
+                    var handlers = arguments[1];
+                    handlers.map(function(handler){
+                        nexus.bind({
+                            handles: handles,
+                            handle: handler
+                        });
+                    });
+                }else{
+                    nexus.bind({
+                        handles: arguments[0],
+                        handle: arguments[1]
+                    });
+                }
             }else{
                 if (!message.id){
                     message.id = nexus.newId();
@@ -263,4 +274,4 @@
     nexus.bus = nexus.createBus();
     obj.nexus = nexus;
 
-})(window);
+})(jQuery, window);
