@@ -1,27 +1,3 @@
-/*
- Copyright 2012 Alexander Khotyanov
- @aleq, @NexusJS
-
- Permission is hereby granted, free of charge, to any person obtaining
- a copy of this software and associated documentation files (the
- "Software"), to deal in the Software without restriction, including
- without limitation the rights to use, copy, modify, merge, publish,
- distribute, sublicense, and/or sell copies of the Software, and to
- permit persons to whom the Software is furnished to do so, subject to
- the following conditions:
-
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
 (function(obj){
 
     var nexus = {
@@ -237,27 +213,31 @@
                 }
             }
         },
-        message: function(type, name, model, options){
+        sendMessage: function(name, model, options){
             options = options || {};
             var threadId = options.threadId || nexus.mainThreadId,
+                type = options.type || '',
                 message = {
-                    type: type,
                     name: name,
                     model: model || {},
+                    type: type,
                     threadId: threadId,
-                    send: function(type, name, model){
-                        return nexus.message(type, name, model, {
-                            threadId: threadId
+                    sendMessage: function(name, model){
+                        return nexus.sendMessage(name, model, {
+                            threadId: threadId,
+                            type: type
                         });
                     },
                     publishEvent: function(name, model){
-                        return nexus.message(nexus.eventType, name, model, {
-                            threadId: threadId
+                        return nexus.sendMessage(name, model, {
+                            threadId: threadId,
+                            type: nexus.eventType
                         });
                     },
                     dispatchCommand: function(name, model){
-                        return nexus.message(nexus.commandType, name, model, {
-                            threadId: threadId
+                        return nexus.sendMessage(name, model, {
+                            threadId: threadId,
+                            type: nexus.commandType
                         });
                     }
                 };
@@ -267,11 +247,15 @@
             });
             return deferred.promise();
         },
-        event: function(name, model, options){
-            return nexus.message(nexus.eventType,  name, model, options);
+        publishEvent: function(name, model, options){
+            options = options || {};
+            options.type = nexus.eventType;
+            return nexus.sendMessage(name, model, options);
         },
-        command: function(name, model, options){
-            return nexus.message(nexus.commandType,  name, model, options);
+        dispatchCommand: function(name, model, options){
+            options = options || {};
+            options.type = nexus.commandType;
+            return nexus.sendMessage(name, model, options);
         }
     };
 
