@@ -1,6 +1,6 @@
-nexus.js
+Nexus.js
 ========
 
 Enhance your single page apps!
 --------------------
-TODOMVC example here: https://github.com/aksharp/todomvc/tree/gh-pages/architecture-examples/nexusjs
+Todo MVC example of Nexus.js https://github.com/aksharp/todomvc-nexusjs-routerjs
